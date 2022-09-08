@@ -1,0 +1,40 @@
+01 : package io;
+02 : 
+03 : import java.io.BufferedReader;
+04 : import java.io.FileInputStream;
+05 : import java.io.FileOutputStream;
+06 : import java.io.InputStreamReader;
+07 : import java.io.PrintStream;
+08 : 
+09 : public class LineNumEx1 {
+10 : 	public static void main(String[] args) {
+11 : 		try {
+12 : 			FileInputStream fis = new FileInputStream("io/LineNumEx1.java");
+13 : 			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+14 : 			
+15 : 			FileOutputStream fos = new FileOutputStream("io/LineNumEx1.txt");
+16 : 			//다목적 출력스트림
+17 : 			PrintStream ps = new PrintStream(fos);
+18 : 			
+19 : 			String s = "";
+20 : 			int i = 1;
+21 : 			while(true) {
+22 : 				s= br.readLine(); //한줄 단위로 읽어옴.
+23 : 				if(s==null)
+24 : 					break;
+25 : 				if(i<10)
+26 : 					s = "0" + i + " : " + s;
+27 : 				else
+28 : 					s = i + " : " + s;
+29 : 				ps.println(s);
+30 : 				i++;
+31 : 					
+32 : 			}
+33 : 			System.out.println("성공~~~~~");
+34 : 			ps.close();
+35 : 			br.close();
+36 : 		} catch (Exception e) {
+37 : 			e.printStackTrace();
+38 : 		}
+39 : 	}
+40 : }

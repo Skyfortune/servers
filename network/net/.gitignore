@@ -4,3 +4,6 @@
 /InetAddressFrameEx1.class
 /URLEx1.class
 /URLFrameEx1.class
+/EchoServer.class
+/EchoServer$EchoThread.class
+/EchoFrameClient.class

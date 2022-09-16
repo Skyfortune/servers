@@ -28,6 +28,7 @@ public class EchoFrameClient extends MFrame implements ActionListener{
 	PrintWriter out;
 	int port = 8000;
 	
+	//클라리언트를 건드릴 필요는 잘 없다. 나중에 구조를 파악할 것
 	public EchoFrameClient() {
 		super(350,400);
 		setTitle("EchoFrameClient");

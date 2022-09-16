@@ -7,3 +7,11 @@
 /EchoServer.class
 /EchoServer$EchoThread.class
 /EchoFrameClient.class
+/CharServer1.class
+/CharServer1$ClientThread1.class
+/ChatServer1$ClientThread1.class
+/ChatServer1.class
+/ChatClient1.class
+/ChatProtocol2.class
+/ChatServer2.class
+/ChatServer2$ClientThread2.class

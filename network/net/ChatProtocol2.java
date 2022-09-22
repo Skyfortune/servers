@@ -21,4 +21,5 @@ public class ChatProtocol2 {
 	//(S->C): CHATLIST:aaa,bbb,ccc,ddd,
 	public static final String CHATLIST = "CHATLIST";
 	
+	
 }

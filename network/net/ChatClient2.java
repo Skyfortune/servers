@@ -23,7 +23,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
-
 public class ChatClient2 extends MFrame implements ActionListener, Runnable {
 
 	Button bt1, bt2, bt3, bt4;
@@ -88,11 +87,11 @@ public class ChatClient2 extends MFrame implements ActionListener, Runnable {
 			String host = tf1.getText().trim();
 			int port = Integer.parseInt(tf2.getText().trim());
 			connect(host, port);
-			//서버 -> 사용하실 아이디 입력하세요
-			area.append(in.readLine()+"\n");
-			while(true) {
+			// 서버 -> 사용하실 아이디 입력하세요
+			area.append(in.readLine() + "\n");
+			while (true) {
 				String line = in.readLine();
-				if(line==null)
+				if (line == null)
 					break;
 				else
 					routine(line);
@@ -106,39 +105,38 @@ public class ChatClient2 extends MFrame implements ActionListener, Runnable {
 		System.out.println("line: " + line);
 		int idx = line.indexOf(':');
 		String cmd = line.substring(0, idx);
-		String data = line.substring(idx+1);
-		if(cmd.equals(ChatProtocol2.CHATLIST)) {
-			//data = aaa; bbb; ccc; 홍길동;
-			list.removeAll(); //기존에 리스트 전부 삭제
+		String data = line.substring(idx + 1);
+		if (cmd.equals(ChatProtocol2.CHATLIST)) {
+			// data = aaa; bbb; ccc; 홍길동;
+			list.removeAll(); // 기존에 리스트 전부 삭제
 			list.add(listTitle);
 			StringTokenizer st = new StringTokenizer(data, ";");
-			while(st.hasMoreTokens()) {
+			while (st.hasMoreTokens()) {
 				list.add(st.nextToken());
 			}
-			
-		}else if(cmd.equals(ChatProtocol2.CHAT) || 
-				cmd.equals(ChatProtocol2.CHATALL)) {
-			//CHATL[aaa(s)] 메세지 & CHATALL :[aaa]메세지
+
+		} else if (cmd.equals(ChatProtocol2.CHAT) || cmd.equals(ChatProtocol2.CHATALL)) {
+			// CHATL[aaa(s)] 메세지 & CHATALL :[aaa]메세지
 			area.append(data + "\n");
-		}else if(cmd.equals(ChatProtocol2.MESSAGE)) {
-			//data = bbb;밥묵자
+		} else if (cmd.equals(ChatProtocol2.MESSAGE)) {
+			// data = bbb;밥묵자
 			idx = data.indexOf(';');
-			cmd = data.substring(0, idx); //bbb
-			data = data.substring(idx+1); //밥묵자
+			cmd = data.substring(0, idx); // bbb
+			data = data.substring(idx + 1); // 밥묵자
 			new Message("FROM:", cmd, data);
 		}
 	}// --routine
 
-	//run() 메소드 호출 시키는 용도
+	// run() 메소드 호출 시키는 용도
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		if(obj==bt1) {//connect
-			new Thread(this).start(); //run 메소드 호출 결과
+		if (obj == bt1) {// connect
+			new Thread(this).start(); // run 메소드 호출 결과
 			bt1.setEnabled(false);
 			tf1.setEnabled(false);
 			tf2.setEnabled(false);
 			area.setText("");
-		}else if(obj==bt2) {//save
+		} else if (obj == bt2) {// save
 			long fileName = System.currentTimeMillis();
 			try {
 				FileWriter fw = new FileWriter("net/" + fileName + ".txt");
@@ -149,39 +147,39 @@ public class ChatClient2 extends MFrame implements ActionListener, Runnable {
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-		}else if(obj==bt3) {//message
-			//리스트에 현재 커서가 있는 위치값
+		} else if (obj == bt3) {// message
+			// 리스트에 현재 커서가 있는 위치값
 			int idx = list.getSelectedIndex();
-			if(idx==0||idx==-1) {
+			if (idx == 0 || idx == -1) {
 				new MDialog(this, "경고", "아이디를 선택하세요.");
-			}else {
+			} else {
 				new Message("TO:");
 			}
-		}else if(obj==bt4||obj==tf3) {//send
+		} else if (obj == bt4 || obj == tf3) {// send
 			String str = tf3.getText();
-			if(filterMgr(str)) {
+			if (filterMgr(str)) {
 				new MDialog(this, "경고", "입력하신 글자는 금지어 입니다.");
 				return;
 			}
 			if (!flag /* 아이디입력 */) {
-				sendMessage(ChatProtocol2.ID+":"+str);
-				setTitle(getTitle()+"-"+str+"님 반갑습니다.");
+				sendMessage(ChatProtocol2.ID + ":" + str);
+				setTitle(getTitle() + "-" + str + "님 반갑습니다.");
 				area.setText("");
 				tf3.setText("");
 				tf3.requestFocus();
 				flag = true;
-			}else /*일반채팅*/{
+			} else /* 일반채팅 */ {
 				int idx = list.getSelectedIndex();
-				if(idx==-1||idx==0) {
-					sendMessage(ChatProtocol2.CHATALL+":"+str);
-				}else /* 귓속말 대화*/{
+				if (idx == -1 || idx == 0) {
+					sendMessage(ChatProtocol2.CHATALL + ":" + str);
+				} else /* 귓속말 대화 */ {
 					String id = list.getSelectedItem();
-					sendMessage(ChatProtocol2.CHAT+ ":" +id + ";" +str);
+					sendMessage(ChatProtocol2.CHAT + ":" + id + ";" + str);
 				}
 				tf3.setText("");
 				tf3.requestFocus();
 			}
-				
+
 		}
 	}// --actionPerformed
 
@@ -326,13 +324,13 @@ public class ChatClient2 extends MFrame implements ActionListener, Runnable {
 
 	public static void main(String[] args) {
 		new ChatClient2();
-		
+
 		/*
-		 * System.setProperty("file.encoding","UTF-8"); 
-		 * Field charset = Charset.class.getDeclaredField("defaultCharset");
+		 * System.setProperty("file.encoding","UTF-8"); Field charset =
+		 * Charset.class.getDeclaredField("defaultCharset");
 		 * charset.setAccessible(true); charset.set(null,null);
 		 */
-		
+
 		/*
 		 * String str = "aaa;bbb;ccc;홍길동"; //의미가 있게끔 자르는 방법, StringTokenizer st = new
 		 * StringTokenizer(str, ";"); while(st.hasMoreElements()) {

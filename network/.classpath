@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_202"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/admin/Documents/네이트온 받은 파일/ojdbc6.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -17,12 +17,18 @@ VALUES('ccc', '1234', '오지혁', sysdate);
 select * FROM tblregister
 
 create table tblMessage(
-no number PRIMARY key
+no number PRIMARY key,
 fid varchar2(20) not null,
 tid varchar2(20) not null,
 msg varchar2(50) not null,
 mdata timestamp default sysdate 
-)
+);
 
-create sequence msg_seq;
+create sequence msg_seq
+increment by 1
+start with 1
+minvalue 1;
 
+
+select * from board order by tblMessage DESC;
+select count(no) from tblMessage;

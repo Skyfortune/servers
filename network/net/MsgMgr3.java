@@ -19,14 +19,13 @@ public class MsgMgr3 {
 		String sql = null;
 		try {
 			con = pool.getConnection();
-			sql = "insert into tblMessage values(msg_seq.nextval, ???, sysdate)";
+			sql = "insert into tblMessage values(msg_seq.nextval,?,?,?,sysdate)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, bean.getFid());
 			pstmt.setString(2, bean.getTid());
 			pstmt.setString(3, bean.getMsg());
 			pstmt.executeUpdate();
 
-			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

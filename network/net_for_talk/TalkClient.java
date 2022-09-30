@@ -1,4 +1,4 @@
-package net;
+package net_for_talk;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -23,33 +23,30 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
-public class ChatClient3 extends MFrame implements ActionListener, Runnable {
+public class TalkClient extends MFrame implements ActionListener, Runnable {
 
-	Button listBtn, msgBtn, saveBtn, sendBtn;
-//	Button saveBtn, msgBtn, sendBtn;
+	Button saveBtn, msgBtn, sendBtn;
 	TextField sendTf;
 	TextArea contentArea;
 	List chatList;
 	Socket sock;
 	BufferedReader in;
 	PrintWriter out;
-	String title = "MyChat 3.0";
+	String title = "Talk 1.0";
 	String listTitle = "*****CHAT LIST*****";
 	boolean flag = false;
 	String id;
-//	String label[] = { "SAVE", "MESSAGE", "SEND" };
-	String label[] = { "MLIST", "MESSAGE", "SEND", "SAVE" };
-	MsgAWT3 msgAWT3;
+	String label[] = { "SAVE", "MESSAGE", "SEND" };
 
-	public ChatClient3(BufferedReader in, PrintWriter out, String id) {
-		super(500, 500);
+	public TalkClient(BufferedReader in, PrintWriter out, String id) {
+		super(450, 500);
 		this.in = in;
 		this.out = out;
 		this.id = id;
 		setTitle(title + " - " + id + "님 반갑습니다.");
 		contentArea = new TextArea();
-		contentArea.setBackground(Color.DARK_GRAY);
-		contentArea.setForeground(Color.GREEN);
+		contentArea.setBackground(Color.WHITE);
+		contentArea.setForeground(Color.PINK);
 		contentArea.setEditable(false);
 		add(BorderLayout.CENTER, contentArea);
 		// /////////////////////////////////////////////////////////////////////////////////////////
@@ -60,11 +57,11 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 		p2.add(BorderLayout.CENTER, chatList);
 		Panel p3 = new Panel();
 		p3.setLayout(new GridLayout(1, 2));
-		listBtn = new Button(label[0]);
-		listBtn.addActionListener(this);
+		saveBtn = new Button(label[0]);
+		saveBtn.addActionListener(this);
 		msgBtn = new Button(label[1]);
 		msgBtn.addActionListener(this);
-		p3.add(listBtn);
+		p3.add(saveBtn);
 		p3.add(msgBtn);
 		p2.add(BorderLayout.SOUTH, p3);
 		add(BorderLayout.EAST, p2);
@@ -74,11 +71,8 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 		sendTf.addActionListener(this);
 		sendBtn = new Button(label[2]);
 		sendBtn.addActionListener(this);
-		saveBtn = new Button(label[3]);
-		saveBtn.addActionListener(this);
 		p4.add(sendTf);
 		p4.add(sendBtn);
-		p4.add(saveBtn);
 		add(BorderLayout.SOUTH, p4);
 		new Thread(this).start();
 		validate();
@@ -100,7 +94,6 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		// 대화내용 저장 관련
 		if (obj == saveBtn/* save */) {
 			String content = contentArea.getText();
 			// 1970년1월1일 ~현재까지 1/1000초 단위로 계산
@@ -114,8 +107,6 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
-		} else if (obj == listBtn) {
-			sendMessage(ChatProtocol3.MSGLIST + ":" + id);
 		} else if (obj == msgBtn/* message */) {
 			int i = chatList.getSelectedIndex();
 			if (i == -1 || i == 0) {
@@ -131,10 +122,10 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 			}
 			int i = chatList.getSelectedIndex();
 			if (i == -1 || i == 0) {// 전체채팅
-				sendMessage(ChatProtocol3.CHATALL + ":" + str);
+				sendMessage(TalkProtocal.CHATALL + ":" + str);
 			} else { // 귓속말 채팅
 				String id = chatList.getSelectedItem();
-				sendMessage(ChatProtocol3.CHAT + ":" + id + ";" + str);
+				sendMessage(TalkProtocal.CHAT + ":" + id + str);
 			}
 			sendTf.setText("");
 			sendTf.requestFocus();
@@ -145,24 +136,20 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 		int idx = line.indexOf(':');
 		String cmd = line.substring(0, idx);
 		String data = line.substring(idx + 1);
-		if (cmd.equals(ChatProtocol3.CHATLIST)) {
+		if (cmd.equals(TalkProtocal.CHATLIST)) {
 			chatList.removeAll();
 			chatList.add(listTitle);
 			StringTokenizer st = new StringTokenizer(data, ";");
 			while (st.hasMoreTokens()) {
 				chatList.add(st.nextToken());
 			}
-		} else if (cmd.equals(ChatProtocol3.CHAT) || cmd.equals(ChatProtocol3.CHATALL)) {
+		} else if (cmd.equals(TalkProtocal.CHAT) || cmd.equals(TalkProtocal.CHATALL)) {
 			contentArea.append(data + "\n");
-		} else if (cmd.equals(ChatProtocol3.MESSAGE)) {
+		} else if (cmd.equals(TalkProtocal.MESSAGE)) {
 			idx = data.indexOf(';');
 			cmd = data.substring(0, idx);
-			// 쪽지보내기 오류 수정
-			data = data.substring(idx + 1);
+			data = data.substring(idx);
 			new Message("FROM", cmd, data);
-			// 간단하게 창 하나 띄우자
-		} else if (cmd.equals(ChatProtocol3.MSGLIST)) {
-			msgAWT3 = new MsgAWT3(this, data);
 		}
 	}// --routine
 
@@ -172,6 +159,7 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 
 	public boolean filterMgr(String msg) {
 		boolean flag = false;// false이면 금지어 아님
+		//DB로 연결가능할듯 하다
 		String str[] = { "바보", "개새끼", "새끼", "자바", "java" };
 		// msg : 하하 호호 히히
 		StringTokenizer st = new StringTokenizer(msg);// 생략하면 구분자는 공백
@@ -246,7 +234,7 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == send) {
-				sendMessage(ChatProtocol3.MESSAGE + ":" + id + ";" + ta.getText());
+				sendMessage(TalkProtocal.MESSAGE + ":" + id + ";" + ta.getText());
 			}
 			setVisible(false);
 			dispose();
@@ -256,9 +244,9 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 	class MDialog extends Dialog implements ActionListener {
 
 		Button ok;
-		ChatClient3 ct2;
+		TalkClient ct2;
 
-		public MDialog(ChatClient3 ct2, String title, String msg) {
+		public MDialog(TalkClient ct2, String title, String msg) {
 			super(ct2, title, true);
 			this.ct2 = ct2;
 			//////////////////////////////////////////////////////////////////////////////////////////
@@ -293,4 +281,5 @@ public class ChatClient3 extends MFrame implements ActionListener, Runnable {
 			dispose();
 		}
 	}
+
 }
